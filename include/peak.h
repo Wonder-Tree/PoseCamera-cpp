@@ -1,15 +1,8 @@
-#ifndef CUSTOM_OPS_PEAK_H
-#define CUSTOM_OPS_PEAK_H
-
 #pragma once
 
 #include <vector>
 #include <opencv2/core/core.hpp>
-#include "thor/structures.h"
-
-
-using namespace thor;
-
+#include "human_pose.h"
 
 namespace human_pose_estimation {
 struct Peak {
@@ -54,8 +47,3 @@ std::vector<HumanPose> groupPeaksToPoses(
 	const int minJointsNumber,
 	const float minSubsetScore);
 }  
-
-
-
-
-#endif 

@@ -2,18 +2,14 @@
 #include <iostream>
 #include <memory>
 #include <string>
-#include "glog/logging.h"
-
 #include "opencv2/videoio.hpp"
 #include "opencv2/core.hpp"
 #include "opencv2/imgproc.hpp"
 #include "opencv2/highgui.hpp"
 #include "human_pose_estimator.h"
+#include "render_human_pose.h"
 
-#include "thor/vis.h"
 
-using namespace thor::vis;
-using namespace google;
 using namespace std;
 using namespace human_pose_estimation;
 using namespace cv;
@@ -28,16 +24,16 @@ int main(int argc, const char* argv[]) {
 
 
   HumanPoseEstimator estimator(argv[1]);
-
+  std::cout << "Intialized";
   string v_f = "../data/sample.mp4";
   if (argc > 2) {
     v_f = argv[2];
   }
 
   if (v_f.find("mp4") != string::npos) {
-	LOG(INFO) << "inference on video file: " << v_f;
+	std::cout << "inference on video file: " << std::endl;
 	cv::VideoCapture cap(v_f);
-	if (!cap.isOpened()) {LOG(ERROR) << "failed to open file.";}
+	if (!cap.isOpened()) { std::cout << "failed to open file.";}
 
 	while (true) {
 	  cv::Mat frame;
@@ -56,7 +52,7 @@ int main(int argc, const char* argv[]) {
 		rawPose << std::fixed << std::setprecision(0);
 		rawPose << pose.score;
 	  }
-	  renderHumanPose(poses, frame);
+	  human_pose_estimation::renderHumanPose(poses, frame);
 
 	  cv::Mat fpsPane(35, 155, CV_8UC3);
 	  fpsPane.setTo(cv::Scalar(153, 119, 76));
@@ -65,13 +61,11 @@ int main(int argc, const char* argv[]) {
 	  cv::putText(frame, to_string(1/delta_s), cv::Point(16, 32),
 				  cv::FONT_HERSHEY_COMPLEX, 0.8, cv::Scalar(0, 0, 255));
 
-	  cv::Mat blank_img(frame.size(), CV_8UC1, cv::Scalar(0, 0, 0));
-	  renderHumanPoseSimple(poses, blank_img);
-	  cv::imshow("mask", blank_img);
-
-	  cv::imshow("C++ libtorch HumanPose Estimation", frame);
+	  cv::imshow("Pose Camera - HumanPose Estimation", frame);
 	  cv::waitKey(1);
 	}
+  } else {
+	  std::cout << "Specify video file.";
   }
 
   return 1;

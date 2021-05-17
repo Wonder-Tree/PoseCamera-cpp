@@ -1,8 +1,5 @@
 #include <torch/script.h>
 #include "human_pose_estimator.h"
-#include "glog/logging.h"
-
-using namespace google;
 
 namespace human_pose_estimation {
 
@@ -20,16 +17,16 @@ HumanPoseEstimator::HumanPoseEstimator(const std::string &modelPath)
 	  modelPath(modelPath) {
 
   if (!torch::cuda::is_available()) {
-	LOG(INFO) << "CUDA not detected, using CPU instead.";
+	std::cout << "CUDA not detected, using CPU instead.";
 	device_type = torch::kCPU;
   } else {
-	LOG(INFO) << "GPU detected, CUDA enable.";
+	std::cout << "GPU detected, CUDA enable.";
   }
   _module_not_ptr = torch::jit::load(modelPath);
   module = std::make_shared<torch::jit::script::Module>(_module_not_ptr);
   module->to(device_type);
   assert(module != nullptr);
-  LOG(INFO) << "model loaded.";
+  std::cout << "model loaded.";
 }
 
 HumanPoseEstimator::~HumanPoseEstimator() {
@@ -43,7 +40,7 @@ std::vector<HumanPose> HumanPoseEstimator::estimate(const cv::Mat &image) {
 	// in torch we do not need do this, since module fit it's input
 	// shape according to input image size
 	// but we need calculate pad in that function, so we call it once
-	LOG(WARNING) << "input width changed.. we currently dont know what to do.";
+	std::cout << "input width changed.. we currently dont know what to do.";
   }
 
   cv::Mat in_img;
@@ -57,7 +54,7 @@ std::vector<HumanPose> HumanPoseEstimator::estimate(const cv::Mat &image) {
 
   double tic = cv::getTickCount();
   auto outputs = module->forward(input).toTensor();
-  LOG(INFO) << "forward time: " << ((double) cv::getTickCount() - tic) / cv::getTickFrequency() << "s";
+  std::cout << "forward time: " << ((double) cv::getTickCount() - tic) / cv::getTickFrequency() << "s";
 
   torch::Tensor stage2_heatmaps = outputs.slice(/*dim=*/1, /*start=*/0, /*end=*/19).detach().squeeze().to(torch::kCPU);
   torch::Tensor stage2_pafs = outputs.slice(/*dim=*/1, /*start=*/19, /*end=*/57).detach().squeeze().to(torch::kCPU);

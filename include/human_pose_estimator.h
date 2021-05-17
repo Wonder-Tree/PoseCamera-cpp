@@ -1,32 +1,14 @@
-// ************************************
-// Copyrights by Jin Fagang
-// 6/11/19-11-14
-// human_pose_estimator
-// jinfagang19@gmail.com
-// ************************************
-
-//
-// Created by jintain on 6/11/19.
-//
-
-#ifndef CUSTOM_OPS_HUMAN_POSE_ESTIMATOR_H
-#define CUSTOM_OPS_HUMAN_POSE_ESTIMATOR_H
+#pragma once
 
 #include <algorithm>
 #include <string>
 #include <vector>
 #include <iostream>
 #include <opencv2/imgproc/imgproc.hpp>
-#include "glog/logging.h"
 #include "peak.h"
 
-#include "torch/torch.h"
+#include <torch/torch.h>
 #include <torch/cuda.h>
-#include "thor/structures.h"
-
-
-using namespace thor;
-using namespace google;
 
 namespace human_pose_estimation {
 
@@ -56,7 +38,6 @@ class HumanPoseEstimator {
   std::shared_ptr<torch::jit::script::Module> module;
   torch::jit::script::Module _module_not_ptr;
 
-  const size_t keypointsNumber = 18;
   int minJointsNumber;
   int stride;
   cv::Vec4i pad;
@@ -96,8 +77,9 @@ class HumanPoseEstimator {
 						  const cv::Size &imageSize);
 
   bool inputWidthIsChanged(const cv::Size &imageSize);
+
+
+  const size_t keypointsNumber = 18;
 };
 
 }
-
-#endif //CUSTOM_OPS_HUMAN_POSE_ESTIMATOR_H

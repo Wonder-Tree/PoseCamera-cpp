@@ -1,32 +1,22 @@
 cmake_minimum_required(VERSION 3.0 FATAL_ERROR)
-project(light_pose_libtorch)
+project(pose_camera_cpp)
 
-set(CMAKE_CXX_STANDARD 14)
 add_definitions("-std=c++14")
 
-# should change this
-set(CMAKE_PREFIX_PATH $ENV{HOME}/libtorch)
-link_directories($ENV{HOME}/libtorch/lib)
+find_package(OpenCV REQUIRED PATHS "d:/wondertree/opencv/build")
+find_package(Torch REQUIRED PATHS "d:/wondertree/libtorch")
 
-find_package(Torch REQUIRED)
 include_directories(include/)
-if (NOT Torch_FOUND)
-    message(FATAL_ERROR "you should change CMAKE_PREFIX_PATH to libtorch dir, have you copied libtorch to home?")
-endif()
-
-
 file(GLOB_RECURSE SOURCES
         include/*.h
-        src/peak.cc
-        src/human_pose_estimator.cc)
-
-find_package(OpenCV REQUIRED)
-
-add_executable(light_pose_estimate ${SOURCES} main.cc)
-target_link_libraries(light_pose_estimate
-        ${TORCH_LIBRARIES}
-        glog
-        ${OpenCV_LIBS}
-        thor
+        src/*.cc
         )
-set_property(TARGET light_pose_estimate PROPERTY CXX_STANDARD 11)
+
+add_executable(pose_camera_cpp ${SOURCES} main.cc)
+target_link_libraries(pose_camera_cpp 
+        ${OpenCV_LIBS} 
+        ${TORCH_LIBRARIES}
+        )
+
+set_property(TARGET pose_camera_cpp PROPERTY CXX_STANDARD 11)
+
