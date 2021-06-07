@@ -1,3 +1,5 @@
+[![CodeFactor](https://www.codefactor.io/repository/github/wonder-tree/posecamera-cpp/badge)](https://www.codefactor.io/repository/github/wonder-tree/posecamera-cpp)
+
 # PoseCamera(cpp)
 
 ## Realtime Humanpose Estimation in C++
